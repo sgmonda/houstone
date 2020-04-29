@@ -31,13 +31,13 @@ async function handle(
     return result;
   } catch (e) {
     let code = 500;
-    let body = { message: "Internal Server Error" };
+    let body = { error: "Internal Server Error" };
     if (e instanceof CustomError) {
-      console.log("Handled Error", e.code, e.error);
+      console.log("Handled Error", e.code, e);
+      code = e.code;
+      body.error = e.error.message;
     } else {
-      console.error("Unhandled Error", e);
-      code = 500;
-      body.message = "Internal Server Error";
+      console.error("Unhandled Error", e, e.trace);
     }
     return { code, body };
   }
@@ -59,6 +59,7 @@ class App {
   }
 
   async onRequest(httpRequest: Deno.ServerRequest) {
+    console.log("LLEGA REQUEST", httpRequest);
     const req = new Request(httpRequest);
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
@@ -95,7 +96,6 @@ class App {
       put: new Map(),
       delete: new Map(),
     };
-    console.log("APP PROPS", props);
     const { host: hostname = settings.host, port = settings.port } = props;
     this.server = http.serve({ port, hostname });
     this.isListening = false;
