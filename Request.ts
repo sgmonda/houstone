@@ -1,7 +1,7 @@
 import { Deno } from "./types/deno.d.ts";
 
 export type Query = {
-  [key: string]: number | string | boolean | number[] | string[] | boolean[];
+  [key: string]: string[];
 };
 
 export type Params = {
@@ -10,12 +10,25 @@ export type Params = {
 
 export type RequestState = Map<any, any>;
 
-function parseUrl(url: string): { path: string; query: Query; params: Params } {
-  const path = "/";
+function parseQuery(url: string): Query {
   const query: Query = {};
+  const urlParams = new URLSearchParams(url.replace(/^.+\?/, ""));
+  for (const entry of urlParams.entries()) {
+    query[entry[0]] = query[entry[0]] || [];
+    query[entry[0]].push(entry[1]);
+    console.log(`${entry[0]}: ${entry[1]}`);
+  }
+  return query;
+}
+
+function parseUrl(url: string): { path: string; query: Query; params: Params } {
   const params: Params = {};
-  // @TODO Implement this
-  return { path, query, params };
+  // @TODO Parse params
+  return {
+    path: url.replace(/\?.+$/, ""),
+    query: parseQuery(url),
+    params,
+  };
 }
 
 // async function parseMultipart(): Promise<any> {}
@@ -53,7 +66,9 @@ class Request {
     this.path = path;
     this.query = query;
     this.params = params;
-
+    console.log("PARSE PATH", path);
+    console.log("PARSE QUERY", query);
+    console.log("PARSE PARAMS", params);
     // this.body = await parseBody(this.headers.ContentType, httpRequest.r);
     this._raw = httpRequest;
   }

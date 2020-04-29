@@ -21,7 +21,7 @@ async function handle(
   middlewares: Middleware[],
   handler: Route | null
 ): Promise<ResponseData> {
-  console.log("HANDLE", req);
+  console.log("HANDLE", handler);
   try {
     for await (const middleware of middlewares) {
       await middleware(req);
@@ -62,7 +62,7 @@ class App {
     const req = new Request(httpRequest);
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
-      if (regex.test(req.url)) hand = h;
+      if (regex.test(req.path)) hand = h;
     }
     const { code, body } = await handle(req, [], hand);
     httpRequest.respond({ status: code, body });
