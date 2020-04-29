@@ -3,6 +3,7 @@ import Middleware from "./Middleware.ts";
 import CustomError from "./CustomError.ts";
 import Route from "./Route.ts";
 import Deno from "./types/deno.d.ts";
+import settings from "./settings.json";
 
 interface Props {
   host?: string;
@@ -48,7 +49,8 @@ class App {
   routes: { [key: string]: Map<RegExp, Route> };
 
   async start() {
-    console.log("SERVER RUNNING AT", this.server);
+    const { hostname, port } = this.server.listener.addr;
+    console.log(`Server listening at http://${hostname}:${port}`);
     this.isListening = true;
     for await (const httpRequest of this.server) {
       if (this.isListening) break;
@@ -94,10 +96,10 @@ class App {
       delete: new Map(),
     };
     console.log("APP PROPS", props);
-    const { host = "http://localhost", port } = props;
-    const address = `${props.host}:${props.port}`;
-    this.server = http.serve(address);
+    const { host: hostname = settings.host, port = settings.port } = props;
+    this.server = http.serve({ port, hostname });
     this.isListening = false;
+    this.start();
   }
 }
 
