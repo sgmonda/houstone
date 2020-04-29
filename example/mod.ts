@@ -4,7 +4,7 @@ import config from "./settings.json";
 const MyApp = new App(config);
 
 // @TODO Read this automatically from filesystem tree
-MyApp.get(/\/hello/, async (req: Request) => {
+MyApp.post(/\/hello/, async (req: Request) => {
   return { code: 200, body: { a: 1, b: 2 } };
 });
 

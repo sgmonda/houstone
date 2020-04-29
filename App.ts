@@ -53,13 +53,12 @@ class App {
     console.log(`Server listening at http://${hostname}:${port}`);
     this.isListening = true;
     for await (const httpRequest of this.server) {
-      if (this.isListening) break;
+      if (!this.isListening) continue;
       this.onRequest(httpRequest);
     }
   }
 
   async onRequest(httpRequest: Deno.ServerRequest) {
-    console.log("LLEGA REQUEST", httpRequest);
     const req = new Request(httpRequest);
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
