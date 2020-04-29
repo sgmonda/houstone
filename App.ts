@@ -4,6 +4,7 @@ import CustomError from "./CustomError.ts";
 import Route from "./Route.ts";
 import Deno from "./types/deno.d.ts";
 import settings from "./settings.json";
+import Request from "./Request.ts";
 
 interface Props {
   host?: string;
@@ -22,12 +23,11 @@ async function handle(
 ): Promise<ResponseData> {
   console.log("HANDLE", req);
   try {
-    const state = {};
     for await (const middleware of middlewares) {
-      await middleware(req, state);
+      await middleware(req);
     }
     if (!handler) return { code: 404 };
-    const result = await handler(req, state);
+    const result = await handler(req);
     return result;
   } catch (e) {
     let code = 500;

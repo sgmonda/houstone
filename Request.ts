@@ -1,8 +1,18 @@
-interface Props {}
+import { Deno } from "./types/deno.d.ts";
+
+export interface Props {}
+
+export type RequestState = Map<any, any>;
 
 class Request {
-  constructor(props: Props) {
-    console.log("NEW REQ", props);
+  method: string;
+  url: string;
+  state: RequestState;
+  constructor(httpRequest: Deno.ServerRequest) {
+    console.log("NEW REQ", httpRequest);
+    this.method = httpRequest.method;
+    this.url = httpRequest.url;
+    this.state = new Map();
   }
 }
 
