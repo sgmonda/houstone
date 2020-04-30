@@ -5,6 +5,7 @@ import Route from "./Route.ts";
 import Deno from "./types/deno.d.ts";
 import settings from "./settings.json";
 import Request from "./Request.ts";
+import listFilesTree from "./modules/listFilesTree.ts";
 
 interface Props {
   host?: string;
@@ -88,6 +89,16 @@ class App {
     this.routes["delete"].set(reg, handler);
   }
 
+  async createRoutes() {
+    const fsTree = await listFilesTree("./");
+    console.log("TREE", fsTree);
+    // const cwd = Deno.cwd();
+    // console.log("READING DIRS", cwd);
+    // for await (const dirEntry of Deno.readDir("/")) {
+    //   console.log(dirEntry.name);
+    // }
+  }
+
   constructor(props: Props) {
     this.routes = {
       get: new Map(),
@@ -95,10 +106,11 @@ class App {
       put: new Map(),
       delete: new Map(),
     };
+
     const { host: hostname = settings.host, port = settings.port } = props;
     this.server = http.serve({ port, hostname });
     this.isListening = false;
-    this.start();
+    this.createRoutes().then(() => this.start());
   }
 }
 
