@@ -91,13 +91,13 @@ class App {
   }
 
   async createRoutes() {
-    const fsTree = await listFilesTree("./");
+    const fsTree = await listFilesTree();
     console.log("TREE", fsTree);
 
     // Middlewares
-    for (const name of Object.keys(fsTree.middlewares)) {
+    for (const [name, path] of Object.entries(fsTree["./middlewares"])) {
       console.log("ADDING middleware", name);
-      const md = await import(`./middlewares/${name}`);
+      const md = await import(path as string);
       this.middlewares.push(md);
     }
 
