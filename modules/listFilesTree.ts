@@ -8,8 +8,7 @@ async function listFilesTree(path: string, tree?: { [key: string]: TItem }) {
       tree[nextPath] = Deno.cwd() + "/" + nextPath;
       continue;
     }
-    tree[nextPath] = {};
-    await listFilesTree(nextPath, tree[nextPath] as { [key: string]: TItem });
+    await listFilesTree(nextPath, tree);
   }
   return tree;
 }

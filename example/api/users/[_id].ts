@@ -1,5 +1,5 @@
 import { Route, Request } from "../../../mod.ts";
-import { ResponseData } from "../../../App";
+import { ResponseData } from "../../../App.ts";
 
 const get: Route = async (request: Request): Promise<ResponseData> => {
   console.log("GET USER");

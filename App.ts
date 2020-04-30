@@ -93,25 +93,25 @@ class App {
   }
 
   async createRoutes() {
-    const fsTree = await listFilesTree();
-    console.log("TREE", fsTree);
-
     // Middlewares
-    // const middlewares = await listFilesTree('./middlewares');
-    for (const [_, path] of Object.entries(fsTree["./middlewares"])) {
-      console.log("IMPORTING", path);
+    const middlewares = await listFilesTree("./middlewares");
+    for (const [name, path] of Object.entries(middlewares)) {
+      console.log(`Importing middleware "${name}"`);
       const md = await import(path as string);
       this.middlewares.push(md.default);
     }
 
     // API
-    for (const [name, path] of Object.entries(fsTree["./api"])) {
-      console.log("IMPORTING", path);
+    const endpoints = await listFilesTree("./api");
+    for (const [name, path] of Object.entries(endpoints)) {
+      console.log(`Importing api endpoint "${name}"`);
       const endpoint = await import(path as string);
       for (const method of METHODS) {
         var regex = new RegExp(name.replace(/(^\.\/api)|(\.ts$)/g, ""));
-        console.log("REGEX", regex);
-        if (method in endpoint) this.routes[method].set(regex, endpoint.method);
+        if (method in endpoint) {
+          console.log(`Importing api endpoint [${method}] ${name}`);
+          this.routes[method].set(regex, endpoint.method);
+        }
       }
       this.middlewares.push(endpoint.default);
     }
