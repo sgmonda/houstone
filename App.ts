@@ -66,7 +66,7 @@ class App {
     for (const [regex, h] of this.routes[req.method].entries()) {
       if (regex.test(req.path)) hand = h;
     }
-    const { code, body } = await handle(req, [], hand);
+    const { code, body } = await handle(req, this.middlewares, hand);
     httpRequest.respond({ status: code, body });
   }
 
@@ -96,9 +96,8 @@ class App {
 
     // Middlewares
     for (const [name, path] of Object.entries(fsTree["./middlewares"])) {
-      console.log("ADDING middleware", name);
       const md = await import(path as string);
-      this.middlewares.push(md);
+      this.middlewares.push(md.default);
     }
 
     // const cwd = Deno.cwd();
