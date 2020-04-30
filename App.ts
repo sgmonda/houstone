@@ -24,9 +24,9 @@ async function handle(
   middlewares: Middleware[],
   handler: Route | null
 ): Promise<ResponseData> {
-  console.log("HANDLE", handler);
   try {
     for await (const middleware of middlewares) {
+      console.log("CALLING MIDDLEWARE", middleware);
       await middleware(req);
     }
     if (!handler) return { code: 404 };
@@ -113,7 +113,6 @@ class App {
           this.routes[method].set(regex, endpoint.method);
         }
       }
-      this.middlewares.push(endpoint.default);
     }
   }
 
