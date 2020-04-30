@@ -7,6 +7,8 @@ import settings from "./settings.json";
 import Request from "./Request.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
 
+const METHODS = ["get", "post", "put", "delete"];
+
 interface Props {
   host?: string;
   port?: number;
@@ -95,16 +97,24 @@ class App {
     console.log("TREE", fsTree);
 
     // Middlewares
-    for (const [name, path] of Object.entries(fsTree["./middlewares"])) {
+    // const middlewares = await listFilesTree('./middlewares');
+    for (const [_, path] of Object.entries(fsTree["./middlewares"])) {
+      console.log("IMPORTING", path);
       const md = await import(path as string);
       this.middlewares.push(md.default);
     }
 
-    // const cwd = Deno.cwd();
-    // console.log("READING DIRS", cwd);
-    // for await (const dirEntry of Deno.readDir("/")) {
-    //   console.log(dirEntry.name);
-    // }
+    // API
+    for (const [name, path] of Object.entries(fsTree["./api"])) {
+      console.log("IMPORTING", path);
+      const endpoint = await import(path as string);
+      for (const method of METHODS) {
+        var regex = new RegExp(name.replace(/(^\.\/api)|(\.ts$)/g, ""));
+        console.log("REGEX", regex);
+        if (method in endpoint) this.routes[method].set(regex, endpoint.method);
+      }
+      this.middlewares.push(endpoint.default);
+    }
   }
 
   constructor(props: Props) {
