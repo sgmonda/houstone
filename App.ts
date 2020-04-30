@@ -47,6 +47,7 @@ async function handle(
 class App {
   server: Deno.Server;
   isListening: boolean;
+  middlewares: Middleware[];
   routes: { [key: string]: Map<RegExp, Route> };
 
   async start() {
@@ -92,6 +93,14 @@ class App {
   async createRoutes() {
     const fsTree = await listFilesTree("./");
     console.log("TREE", fsTree);
+
+    // Middlewares
+    for (const name of Object.keys(fsTree.middlewares)) {
+      console.log("ADDING middleware", name);
+      const md = await import(`./middlewares/${name}`);
+      this.middlewares.push(md);
+    }
+
     // const cwd = Deno.cwd();
     // console.log("READING DIRS", cwd);
     // for await (const dirEntry of Deno.readDir("/")) {
@@ -106,7 +115,7 @@ class App {
       put: new Map(),
       delete: new Map(),
     };
-
+    this.middlewares = [];
     const { host: hostname = settings.host, port = settings.port } = props;
     this.server = http.serve({ port, hostname });
     this.isListening = false;
