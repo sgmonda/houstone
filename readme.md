@@ -31,3 +31,8 @@ $ denon --allow-net --allow-read mod.ts
 # Note: this requires "denon" binary. Install it using:
 # deno install denon --allow-read --allow-run https://deno.land/x/denon/denon.ts
 ```
+
+## Features
+
+- Out-of-the box analytics and access limits (i.e. max request/min)
+- 
