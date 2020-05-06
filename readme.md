@@ -40,7 +40,7 @@ $ denon --allow-net --allow-read mod.ts
 ## TODO
 
 - [ ] Improve importing experience. Export types and classes in a better way
-- [ ] asdf
+- [ ] Use Drakefile
 - [ ] asdf
 - [ ] asdf
 - [ ] asdf
