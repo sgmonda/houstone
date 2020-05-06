@@ -61,14 +61,19 @@ class App {
     const req = new Request(httpRequest);
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
+      console.log("CHECK ROUTE REGEX", regex, req.method, req.path);
       if (regex.test(req.path)) hand = h;
     }
     const { code, body } = await handle(req, this.middlewares, hand);
     httpRequest.respond({ status: code, body });
   }
 
-  async stop() {
+  async pause() {
     this.isListening = false;
+  }
+
+  async resume() {
+    this.isListening = true;
   }
 
   get(reg: RegExp, handler: Route) {
