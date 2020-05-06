@@ -91,6 +91,7 @@ class App {
     // Middlewares
     const middlewares = await listFilesTree("./middlewares");
     for (const [name, path] of Object.entries(middlewares)) {
+      // @TODO Sort Middlewares. Alphabetically? Sometimes a middleware depends on others. Auth use to be the first one
       console.log(`Importing middleware "${name}"`);
       const md = await import(path as string);
       this.middlewares.push(md.default);
