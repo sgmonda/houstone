@@ -19,13 +19,13 @@ async function handle(
   middlewares: Middleware[],
   handler: Route | null
 ): Promise<Response> {
+  if (!handler) return { code: 404 };
   try {
     for await (const middleware of middlewares) {
-      console.log("CALLING MIDDLEWARE", middleware);
       await middleware(req);
     }
-    if (!handler) return { code: 404 };
     const result = await handler(req);
+    console.log("AFTER", result);
     return result;
   } catch (e) {
     let code = 500;
@@ -61,8 +61,10 @@ class App {
     const req = new Request(httpRequest);
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
-      console.log("CHECK ROUTE REGEX", regex, req.method, req.path);
-      if (regex.test(req.path)) hand = h;
+      if (regex.test(req.path)) {
+        hand = h;
+        break;
+      }
     }
     const { code, body } = await handle(req, this.middlewares, hand);
     httpRequest.respond({ status: code, body });
@@ -108,10 +110,11 @@ class App {
       console.log(`Importing api endpoint "${name}"`);
       const endpoint = await import(path as string);
       for (const method of METHODS) {
-        var regex = new RegExp(name.replace(/^\./g, "").replace(/\.ts$/, ""));
+        const path = name.replace(/^\./g, "").replace(/\.ts$/, "");
+        var regex = new RegExp(`^${path}$`);
         if (method in endpoint) {
           console.log(`Importing api endpoint [${method}] ${name}`);
-          this.routes[method].set(regex, endpoint.method);
+          this.routes[method].set(regex, endpoint[method]);
         }
       }
     }
