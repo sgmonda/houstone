@@ -1,13 +1,12 @@
-import { Route, Request } from "../../../mod.ts";
-import { ResponseData } from "../../../App.ts";
+import { Route, Request, Response } from "../../../mod.ts";
 
-const get: Route = async (request: Request): Promise<ResponseData> => {
-  console.log("GET USER");
+const get: Route = async (request: Request): Promise<Response> => {
+  console.log("GET USER", request);
   return { code: 200, body: { name: "Pepe", dni: "04938374-S" } };
 };
 
-const put: Route = async (request: Request): Promise<ResponseData> => {
-  console.log("UPDATE USER");
+const put: Route = async (request: Request): Promise<Response> => {
+  console.log("UPDATE USER", request);
   return { code: 200, body: { name: "Pepe", dni: "04938374-S" } };
 };
 

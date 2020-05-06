@@ -1,8 +1,12 @@
-import App from "./App.ts";
-import Page from "./Page.ts";
-import Request from "./Request.ts";
-import Middleware from "./Middleware.ts";
-import CustomError from "./CustomError.ts";
-import Route from "./Route.ts";
+import * as Denwapp from "./core/mod.ts";
 
-export { App, Page, Request, Middleware, CustomError, Route };
+export * from "./core/mod.ts";
+export default Denwapp;
+
+// Usage (option 1/2)
+// import { MyType } from '<url>'
+// const x: MyType = ...
+
+// Usage (option 2/2)
+// import Denwapp from '<url>'
+// const x: Denwapp.MyType = ...

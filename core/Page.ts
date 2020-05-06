@@ -1,4 +1,4 @@
-import PageProps from "./PageProps.ts";
+import PageProps from "./PageProps.d.ts";
 
 interface Props {
   port: number;

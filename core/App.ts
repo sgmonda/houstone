@@ -1,10 +1,10 @@
-import { http } from "./deps.ts";
-import Middleware from "./Middleware.ts";
-import CustomError from "./CustomError.ts";
-import Route from "./Route.ts";
-import Deno from "./types/deno.d.ts";
-import settings from "./settings.json";
+import Deno from "../deno.d.ts";
+import { http } from "../deps.ts";
+import Middleware from "./Middleware.d.ts";
+import Route from "./Route.d.ts";
+import settings from "../settings.json";
 import Request from "./Request.ts";
+import Response from "./Response.d.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
 
 const METHODS = ["get", "post", "put", "delete"];
@@ -14,16 +14,11 @@ interface Props {
   port?: number;
 }
 
-export type ResponseData = {
-  code?: number;
-  body?: { [key: string]: any };
-};
-
 async function handle(
   req: Request,
   middlewares: Middleware[],
   handler: Route | null
-): Promise<ResponseData> {
+): Promise<Response> {
   try {
     for await (const middleware of middlewares) {
       console.log("CALLING MIDDLEWARE", middleware);
@@ -35,7 +30,7 @@ async function handle(
   } catch (e) {
     let code = 500;
     let body = { error: "Internal Server Error" };
-    if (e instanceof CustomError) {
+    if (e.code && e.body) {
       console.log("Handled Error", e.code, e);
       code = e.code;
       body.error = e.error.message;
@@ -107,7 +102,7 @@ class App {
       console.log(`Importing api endpoint "${name}"`);
       const endpoint = await import(path as string);
       for (const method of METHODS) {
-        var regex = new RegExp(name.replace(/(^\.\/api)|(\.ts$)/g, ""));
+        var regex = new RegExp(name.replace(/^\./g, "").replace(/\.ts$/, ""));
         if (method in endpoint) {
           console.log(`Importing api endpoint [${method}] ${name}`);
           this.routes[method].set(regex, endpoint.method);

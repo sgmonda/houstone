@@ -1,17 +1,11 @@
-import { Deno } from "./types/deno.d.ts";
-
-export type Query = {
-  [key: string]: string[];
-};
-
-export type Params = {
-  [key: string]: string | number;
-};
+import { Deno } from "../deno.d.ts";
+import Query from "./Query.d.ts";
+import Params from "./Params.d.ts";
 
 export type RequestState = Map<any, any>;
 
 function parseQuery(url: string): Query {
-  const query: Query = {};
+  const query: { [key: string]: string[] } = {};
   const urlParams = new URLSearchParams(url.replace(/^.+\?/, ""));
   for (const entry of urlParams.entries()) {
     query[entry[0]] = query[entry[0]] || [];
@@ -52,14 +46,14 @@ class Request {
   path: string;
   query: Query;
   params: Params;
-  state: RequestState;
+  metadata: { [key: string]: any };
   // files: Deno.File[];
   // body: any;
   _raw: Deno.ServerRequest;
 
   constructor(httpRequest: Deno.ServerRequest) {
     this.method = httpRequest.method.toLowerCase();
-    this.state = new Map();
+    this.metadata = {};
     this.headers = httpRequest.headers;
 
     const { path, query, params } = parseUrl(httpRequest.url);

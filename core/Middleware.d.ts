@@ -1,7 +1,5 @@
 import Request from "./Request.ts";
 
-interface Middleware {
+export default interface Middleware {
   (request: Request): Promise<void>;
 }
-
-export default Middleware;
