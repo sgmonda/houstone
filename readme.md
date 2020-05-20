@@ -1,3 +1,9 @@
+## Motivations
+
+1. Avoid complex configuration to get Server Side Rendering with React
+2. Avoid having to write different things than what we want to write, like having to write `className="..."` instead of `class="..."` just not to break things.
+3. ...
+
 ## Requirements
 
 1. Deno
