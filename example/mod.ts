@@ -1,6 +1,7 @@
 import Denwapp from "../mod.ts";
-import config from "./settings.json";
 
-const MyApp = new Denwapp.App(config);
+const MyApp = new Denwapp.App({
+  port: 8711,
+});
 
 export default MyApp;

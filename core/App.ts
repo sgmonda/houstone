@@ -2,7 +2,7 @@ import Deno from "../deno.d.ts";
 import { http } from "../deps.ts";
 import Middleware from "./Middleware.d.ts";
 import Route from "./Route.d.ts";
-import settings from "../settings.json";
+import settings from "../settings.ts";
 import Request from "./Request.ts";
 import Response from "./Response.d.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
