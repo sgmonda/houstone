@@ -1,11 +1,11 @@
-import { Route, Request, Response } from "../../../mod.ts";
+import { TRoute, Request, Response } from "../../../mod.ts";
 
-const get: Route = async (request: Request): Promise<Response> => {
+const get: TRoute = async (request: Request): Promise<Response> => {
   console.log("GET USER", request);
   return { code: 200, body: { name: "Pepe", dni: "04938374-S" } };
 };
 
-const put: Route = async (request: Request): Promise<Response> => {
+const put: TRoute = async (request: Request): Promise<Response> => {
   console.log("UPDATE USER", request);
   return { code: 200, body: { name: "Pepe", dni: "04938374-S" } };
 };

@@ -1,7 +1,7 @@
 import Deno from "../deno.d.ts";
 import { http } from "../deps.ts";
-import Middleware from "./Middleware.d.ts";
-import Route from "./Route.d.ts";
+import TMiddleware from "./TMiddleware.d.ts";
+import TRoute from "./TRoute.d.ts";
 import settings from "../settings.ts";
 import Request from "./Request.ts";
 import Response from "./Response.d.ts";
@@ -16,8 +16,8 @@ interface Props {
 
 async function handle(
   req: Request,
-  middlewares: Middleware[],
-  handler: Route | null
+  middlewares: TMiddleware[],
+  handler: TRoute | null
 ): Promise<Response> {
   if (!handler) return { code: 404 };
   try {
@@ -44,8 +44,8 @@ async function handle(
 class App {
   server: Deno.Server;
   isListening: boolean;
-  middlewares: Middleware[];
-  routes: { [key: string]: Map<RegExp, Route> };
+  middlewares: TMiddleware[];
+  routes: { [key: string]: Map<RegExp, TRoute> };
 
   async start() {
     const { hostname, port } = this.server.listener.addr;
@@ -67,7 +67,13 @@ class App {
       }
     }
     const { code, body } = await handle(req, this.middlewares, hand);
-    httpRequest.respond({ status: code, body });
+    console.log("BEFORE RESPOND", { code, body });
+    await httpRequest.respond({
+      status: code,
+      headers: new Headers({ "content-type": "application/json" }),
+      body: JSON.stringify(body),
+    });
+    console.log("AFTER RESPOND", { code, body });
   }
 
   async pause() {
@@ -78,19 +84,19 @@ class App {
     this.isListening = true;
   }
 
-  get(reg: RegExp, handler: Route) {
+  get(reg: RegExp, handler: TRoute) {
     this.routes["get"].set(reg, handler);
   }
 
-  post(reg: RegExp, handler: Route) {
+  post(reg: RegExp, handler: TRoute) {
     this.routes["post"].set(reg, handler);
   }
 
-  put(reg: RegExp, handler: Route) {
+  put(reg: RegExp, handler: TRoute) {
     this.routes["put"].set(reg, handler);
   }
 
-  delete(reg: RegExp, handler: Route) {
+  delete(reg: RegExp, handler: TRoute) {
     this.routes["delete"].set(reg, handler);
   }
 

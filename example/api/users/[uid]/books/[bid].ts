@@ -1,6 +1,6 @@
 import Denwapp from "../../../../../mod.ts";
 
-const get: Denwapp.Route = async (
+const get: Denwapp.TRoute = async (
   request: Denwapp.Request
 ): Promise<Denwapp.Response> => {
   console.log("GET BOOK FROM USER", request);

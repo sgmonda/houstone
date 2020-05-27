@@ -1,6 +1,6 @@
-import { Request, Middleware } from "../../mod.ts";
+import { Request, TMiddleware } from "../../mod.ts";
 
-const MyMiddleware: Middleware = async (req: Request): Promise<void> => {
+const MyMiddleware: TMiddleware = async (req: Request): Promise<void> => {
   console.log("REQUEST EN AUTH MIDDLEWARE", req.query);
 };
 

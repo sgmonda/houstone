@@ -15,10 +15,13 @@
 Create the simplest app possible:
 
 ```typescript
-import { App } from "<url-to-this-framework>";
-import config from "./settings.json";
+// File: /mod.ts
 
-const MyApp = new App(config);
+import Denwapp from "../mod.ts";
+
+const MyApp = new Denwapp.App({
+  port: 8711,
+});
 
 export default MyApp;
 ```
@@ -36,6 +39,46 @@ $ denon --allow-net --allow-read mod.ts
 
 # Note: this requires "denon" binary. Install it using:
 # deno install denon --allow-read --allow-run https://deno.land/x/denon/denon.ts
+```
+
+And check status from a terminal or browser:
+
+```
+$ curl -Lv 'http://127.0.0.1:8711/api/status'
+```
+
+### Middlewares
+
+Any file under `/middlewares` folder is considered a middleware. Example:
+
+```typescript
+// File: /middlewares/example.ts
+
+import { Request, TMiddleware } from "../../mod.ts";
+
+const MyMiddleware: TMiddleware = async (req: Request): Promise<void> => {
+  console.log("REQUEST EN AUTH MIDDLEWARE", req.query);
+};
+
+export default MyMiddleware;
+```
+
+### Endpoints
+
+Any file under `/api` is considered an API endpoint. Example:
+
+```typescript 
+// File: /api/example.ts
+
+import { TRoute, Request, Response } from "../../mod.ts";
+
+const get: TRoute = async (request: Request): Promise<Response> => {
+  console.log("EXAMPLE for GET method", request);
+  return { code: 200, body: { status: "Up and happy", date: new Date() } };
+};
+
+export { get };
+
 ```
 
 ## Features
