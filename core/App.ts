@@ -78,7 +78,7 @@ class App {
       } else {
         Object.assign(responseContent, {
           code: HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message: "Internal Server Error", // @TODO Define these messages in an object
+          body: { error: "Internal Server Error" }, // @TODO Define these messages in an object
         });
       }
     }
