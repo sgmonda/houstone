@@ -46,6 +46,7 @@ class Request {
   path: string;
   query: Query;
   params: Params;
+  date: Date;
   metadata: { [key: string]: any };
   // files: Deno.File[];
   // body: any;
@@ -60,6 +61,7 @@ class Request {
     this.path = path;
     this.query = query;
     this.params = params;
+    this.date = new Date();
     console.log("PARSE PATH", path);
     console.log("PARSE QUERY", query);
     console.log("PARSE PARAMS", params);

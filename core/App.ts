@@ -4,8 +4,9 @@ import TMiddleware from "./TMiddleware.d.ts";
 import TRoute from "./TRoute.d.ts";
 import settings from "../settings.ts";
 import Request from "./Request.ts";
-import Response from "./Response.d.ts";
+import Response, { ResponseBody } from "./Response.d.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
+import { HttpStatusCode, HttpError } from "./HttpError.ts";
 
 const METHODS = ["get", "post", "put", "delete"];
 
@@ -24,9 +25,7 @@ async function handle(
     for await (const middleware of middlewares) {
       await middleware(req);
     }
-    const result = await handler(req);
-    console.log("AFTER", result);
-    return result;
+    return handler(req);
   } catch (e) {
     let code = 500;
     let body = { error: "Internal Server Error" };
@@ -66,14 +65,31 @@ class App {
         break;
       }
     }
-    const { code, body } = await handle(req, this.middlewares, hand);
-    console.log("BEFORE RESPOND", { code, body });
+    const responseContent = {
+      code: HttpStatusCode.NO_CONTENT,
+      body: null as ResponseBody | null,
+    };
+    try {
+      Object.assign(responseContent, await handle(req, this.middlewares, hand));
+    } catch (err) {
+      if (err instanceof HttpError) {
+        responseContent.code = err.code;
+        if (err.message) responseContent.body = { error: err.message };
+      } else {
+        Object.assign(responseContent, {
+          code: HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message: "Internal Server Error", // @TODO Define these messages in an object
+        });
+      }
+    }
+    // usage.push(req);
     await httpRequest.respond({
-      status: code,
-      headers: new Headers({ "content-type": "application/json" }),
-      body: JSON.stringify(body),
+      status: responseContent.code,
+      headers:
+        responseContent.body &&
+        new Headers({ "content-type": "application/json" }),
+      body: responseContent.body && JSON.stringify(responseContent.body),
     });
-    console.log("AFTER RESPOND", { code, body });
   }
 
   async pause() {

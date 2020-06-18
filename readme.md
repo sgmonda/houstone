@@ -38,7 +38,7 @@ Or as development (watching files for changes):
 $ denon --allow-net --allow-read mod.ts
 
 # Note: this requires "denon" binary. Install it using:
-# deno install denon --allow-read --allow-run https://deno.land/x/denon/denon.ts
+# $ deno install --allow-read --allow-run --allow-write --allow-net -f --unstable https://deno.land/x/denon@v2.2.0/denon.ts
 ```
 
 And check status from a terminal or browser:
@@ -67,7 +67,7 @@ export default MyMiddleware;
 
 Any file under `/api` is considered an API endpoint. Example:
 
-```typescript 
+```typescript
 // File: /api/example.ts
 
 import { TRoute, Request, Response } from "../../mod.ts";
@@ -78,13 +78,12 @@ const get: TRoute = async (request: Request): Promise<Response> => {
 };
 
 export { get };
-
 ```
 
 ## Features
 
 - Out-of-the box analytics and access limits (i.e. max request/min)
-- 
+-
 
 ## TODO
 

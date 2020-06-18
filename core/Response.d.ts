@@ -1,4 +1,8 @@
+import { HttpStatusCode } from "./HttpError.ts";
+
+export type ResponseBody = { [key: string]: any };
+
 export default interface Response {
-  code?: number;
-  body?: { [key: string]: any };
+  code?: HttpStatusCode;
+  body?: ResponseBody;
 }
