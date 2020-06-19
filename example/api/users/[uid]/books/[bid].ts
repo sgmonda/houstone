@@ -1,8 +1,6 @@
-import Denwapp from "../../../../../mod.ts";
+import { Route, Request, Response } from "../../../../../mod.ts";
 
-const get: Denwapp.TRoute = async (
-  request: Denwapp.Request
-): Promise<Denwapp.Response> => {
+const get: Route = async (request: Request): Promise<Response> => {
   console.log("GET BOOK FROM USER", request);
   return { code: 200, body: { name: "Pepe", dni: "04938374-S" } };
 };

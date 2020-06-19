@@ -1,6 +1,6 @@
-import Denwapp from "../mod.ts";
+import H from "../mod.ts";
 
-const MyApp = new Denwapp.App({
+const MyApp = new H.App({
   port: 8711,
 });
 

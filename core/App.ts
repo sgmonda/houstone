@@ -1,12 +1,13 @@
 import Deno from "../deno.d.ts";
 import { http } from "../deps.ts";
 import TMiddleware from "./TMiddleware.d.ts";
-import TRoute from "./TRoute.d.ts";
+import Route from "./Route.d.ts";
 import settings from "../settings.ts";
 import Request from "./Request.ts";
 import Response, { ResponseBody } from "./Response.d.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
 import { HttpStatusCode, HttpError } from "./HttpError.ts";
+import getHtml from "./getHtml.tsx";
 
 const METHODS = ["get", "post", "put", "delete"];
 
@@ -18,7 +19,7 @@ interface Props {
 async function handle(
   req: Request,
   middlewares: TMiddleware[],
-  handler: TRoute | null
+  handler: Route | null
 ): Promise<Response> {
   if (!handler) return { code: 404 };
   try {
@@ -44,7 +45,7 @@ class App {
   server: Deno.Server;
   isListening: boolean;
   middlewares: TMiddleware[];
-  routes: { [key: string]: Map<RegExp, TRoute> };
+  routes: { [key: string]: Map<RegExp, Route> };
 
   async start() {
     const { hostname, port } = this.server.listener.addr;
@@ -58,6 +59,29 @@ class App {
 
   async onRequest(httpRequest: Deno.ServerRequest) {
     const req = new Request(httpRequest);
+
+    // @TODO REmove this example =============================
+    const browserBundlePath = "/bundle.js";
+    const { html, js } = await getHtml(browserBundlePath);
+    console.log("PATH:", req.path);
+    if (req.path === browserBundlePath) {
+      httpRequest.respond({
+        status: 200,
+        headers: new Headers({
+          "content-type": "application/javascript",
+        }),
+        body: js,
+      });
+    }
+    if (req.path === "/react-example") {
+      httpRequest.respond({
+        status: 200,
+        headers: new Headers({ "content-type": "text/html" }),
+        body: html,
+      });
+    }
+    // ===========================
+
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
       if (regex.test(req.path)) {
@@ -100,19 +124,19 @@ class App {
     this.isListening = true;
   }
 
-  get(reg: RegExp, handler: TRoute) {
+  get(reg: RegExp, handler: Route) {
     this.routes["get"].set(reg, handler);
   }
 
-  post(reg: RegExp, handler: TRoute) {
+  post(reg: RegExp, handler: Route) {
     this.routes["post"].set(reg, handler);
   }
 
-  put(reg: RegExp, handler: TRoute) {
+  put(reg: RegExp, handler: Route) {
     this.routes["put"].set(reg, handler);
   }
 
-  delete(reg: RegExp, handler: TRoute) {
+  delete(reg: RegExp, handler: Route) {
     this.routes["delete"].set(reg, handler);
   }
 
@@ -140,6 +164,8 @@ class App {
         }
       }
     }
+
+    // Pages
   }
 
   constructor(props: Props) {
