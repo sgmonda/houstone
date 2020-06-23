@@ -1,23 +1,27 @@
 import { React, ReactDOMServer } from "../deps.ts";
-import MyComponent from "../example/pages/components/MyComponent.tsx";
+import MyComponent from "../example/components/MyComponent.tsx";
+import { Component } from "./Component.ts";
+import { PageProps } from "./mod.ts";
 
-const App = () => (
+const App = ({ children }: any) => (
   <>
     <p>Before</p>
-    <MyComponent />
+    {children}
     <p>After</p>
   </>
 );
 
-export default async (browserBundlePath: string) => {
+export default async (
+  C: Component<any, any>,
+  pageProps: PageProps,
+) => {
   return {
     html: `
     <html>
       <head>
-        <script type="module" src="${browserBundlePath}"></script>
       </head>
       <body>
-        ${(ReactDOMServer as any).renderToString(<App />)}
+      ${(ReactDOMServer as any).renderToString(<App><C {...pageProps} /></App>)}
       </body>
     </html>`,
     js: `

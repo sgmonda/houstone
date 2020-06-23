@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "typeRoots": ["./types"],
-    "types": ["deno"]
+    "typeRoots": [
+      "./types"
+    ],
+    "types": [
+      "deno"
+    ]
   }
 }

@@ -1,32 +1,41 @@
-import { Page, PageProps } from "../../mod.ts";
-import MyComponent from "./components/MyComponent.tsx";
+import { React, createComponent, State, PageProps } from "../../mod.ts";
+import { Component } from "../../core/mod.ts";
+import MyComponent from "../components/MyComponent.tsx";
 
-interface Props extends PageProps {}
-interface State {}
-
-class Index extends Page<Props, State> {
-  render() {
-    return (
-      <div>
-        hello, world
-        <br />
-        hi
-      </div>
-    );
-  }
+export interface Props extends PageProps {
+  a?: number;
+  b?: string;
 }
 
-export const page = (): string => ({});
+type MyState = {
+  c: number;
+  d: string;
+};
 
-export const MyPage = () => {
-  const [count, setCount] = (React as any).useState(0);
-
+const MyPage: Component<Props, MyState> = (
+  { a, b, location }: Props,
+  { c, d, setState }: State<MyState>,
+): string => {
+  console.log("LAS PROPS QUE LLEGAN", a, b);
+  console.log("EL STATE QUE LLEGA", c, d);
+  const onClick = (e: any) => {
+    e.preventDefault();
+    console.log("CLICK!");
+    // setState({ c: Math.random(), d: "Random" });
+  };
   return (
-    <div>
-      <h1>Hello DenoLand!</h1>
-      <MyComponent a={count} b={`Counter is ${count * 2}`} />
-      <button onClick={() => setCount(count + 1)}>Click the 🦕</button>
-      <p>You clicked the 🦕 {count} times</p>
-    </div>
+    <>
+      <p>I'm index page</p>
+      <div>
+        {JSON.stringify(location)}
+      </div>
+      <MyComponent />
+      {/* <p>URL: {location.url}</p>
+      <p>PATH: {location.path}</p> */}
+    </>
   );
 };
+
+const initialState = { c: 0, d: "Hello" };
+
+export default createComponent<Props, MyState>(MyPage, initialState);

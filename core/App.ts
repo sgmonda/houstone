@@ -8,6 +8,8 @@ import Response, { ResponseBody } from "./Response.d.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
 import { HttpStatusCode, HttpError } from "./HttpError.ts";
 import getHtml from "./getHtml.tsx";
+import { PageProps } from "./mod.ts";
+import { State, Component } from "./Component.ts";
 
 const METHODS = ["get", "post", "put", "delete"];
 
@@ -19,7 +21,7 @@ interface Props {
 async function handle(
   req: Request,
   middlewares: TMiddleware[],
-  handler: Route | null
+  handler: Route | null,
 ): Promise<Response> {
   if (!handler) return { code: 404 };
   try {
@@ -46,6 +48,7 @@ class App {
   isListening: boolean;
   middlewares: TMiddleware[];
   routes: { [key: string]: Map<RegExp, Route> };
+  pages: Map<RegExp, Component<PageProps, State<any>>>;
 
   async start() {
     const { hostname, port } = this.server.listener.addr;
@@ -60,27 +63,33 @@ class App {
   async onRequest(httpRequest: Deno.ServerRequest) {
     const req = new Request(httpRequest);
 
-    // @TODO REmove this example =============================
-    const browserBundlePath = "/bundle.js";
-    const { html, js } = await getHtml(browserBundlePath);
-    console.log("PATH:", req.path);
-    if (req.path === browserBundlePath) {
-      httpRequest.respond({
-        status: 200,
-        headers: new Headers({
-          "content-type": "application/javascript",
-        }),
-        body: js,
-      });
+    if (!req.path.startsWith("/api")) {
+      let hand = null;
+      for (const [regex, h] of this.pages.entries()) {
+        if (regex.test(req.path)) {
+          hand = h;
+          break;
+        }
+      }
+      if (hand) {
+        console.log("BEFORE PAGE PROPS", req);
+        const pageProps: PageProps = {
+          location: {
+            url: req.url,
+            path: req.path,
+            query: req.query,
+          },
+        };
+        console.log("PAGE PROPS", pageProps, req.query);
+        const { html } = await getHtml(hand, pageProps);
+        httpRequest.respond({
+          status: 200,
+          headers: new Headers({ "content-type": "text/html" }),
+          body: html,
+        });
+        return;
+      }
     }
-    if (req.path === "/react-example") {
-      httpRequest.respond({
-        status: 200,
-        headers: new Headers({ "content-type": "text/html" }),
-        body: html,
-      });
-    }
-    // ===========================
 
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
@@ -109,8 +118,7 @@ class App {
     // usage.push(req);
     await httpRequest.respond({
       status: responseContent.code,
-      headers:
-        responseContent.body &&
+      headers: responseContent.body &&
         new Headers({ "content-type": "application/json" }),
       body: responseContent.body && JSON.stringify(responseContent.body),
     });
@@ -166,6 +174,15 @@ class App {
     }
 
     // Pages
+    const pages = await listFilesTree("./pages");
+    for (const [name, path] of Object.entries(pages)) {
+      console.log(`Importing page "${name}"`);
+      const page = (await import(path as string)).default;
+      var regex = new RegExp(
+        `^${name.replace(/^\./g, "").replace(/\.tsx?$/, "")}$`,
+      );
+      this.pages.set(regex, page);
+    }
   }
 
   constructor(props: Props) {
@@ -175,6 +192,7 @@ class App {
       put: new Map(),
       delete: new Map(),
     };
+    this.pages = new Map<RegExp, Component<PageProps, State<any>>>();
     this.middlewares = [];
     const { host: hostname = settings.host, port = settings.port } = props;
     this.server = http.serve({ port, hostname });

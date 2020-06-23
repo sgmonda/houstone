@@ -17,9 +17,9 @@ Create the simplest app possible:
 ```typescript
 // File: /mod.ts
 
-import Denwapp from "../mod.ts";
+import { App } from "houstone";
 
-const MyApp = new Denwapp.App({
+const MyApp = new App({
   port: 8711,
 });
 

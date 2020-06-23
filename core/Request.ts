@@ -6,6 +6,8 @@ export type RequestState = Map<any, any>;
 
 function parseQuery(url: string): Query {
   const query: { [key: string]: string[] } = {};
+  const parts = url.split("?");
+  if (parts.length == 1) return query;
   const urlParams = new URLSearchParams(url.replace(/^.+\?/, ""));
   for (const entry of urlParams.entries()) {
     query[entry[0]] = query[entry[0]] || [];
@@ -43,6 +45,7 @@ function parseUrl(url: string): { path: string; query: Query; params: Params } {
 class Request {
   headers: Headers;
   method: string;
+  url: string;
   path: string;
   query: Query;
   params: Params;
@@ -58,6 +61,7 @@ class Request {
     this.headers = httpRequest.headers;
 
     const { path, query, params } = parseUrl(httpRequest.url);
+    this.url = httpRequest.url;
     this.path = path;
     this.query = query;
     this.params = params;
