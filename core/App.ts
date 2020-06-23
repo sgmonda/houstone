@@ -12,6 +12,7 @@ import { PageProps } from "./mod.ts";
 import { State, Component } from "./Component.ts";
 
 const METHODS = ["get", "post", "put", "delete"];
+const API_PREFIX = "/api/";
 
 interface Props {
   host?: string;
@@ -60,37 +61,7 @@ class App {
     }
   }
 
-  async onRequest(httpRequest: Deno.ServerRequest) {
-    const req = new Request(httpRequest);
-
-    if (!req.path.startsWith("/api")) {
-      let hand = null;
-      for (const [regex, h] of this.pages.entries()) {
-        if (regex.test(req.path)) {
-          hand = h;
-          break;
-        }
-      }
-      if (hand) {
-        console.log("BEFORE PAGE PROPS", req);
-        const pageProps: PageProps = {
-          location: {
-            url: req.url,
-            path: req.path,
-            query: req.query,
-          },
-        };
-        console.log("PAGE PROPS", pageProps, req.query);
-        const { html } = await getHtml(hand, pageProps);
-        httpRequest.respond({
-          status: 200,
-          headers: new Headers({ "content-type": "text/html" }),
-          body: html,
-        });
-        return;
-      }
-    }
-
+  async onApiRequest(req: Request) {
     let hand = null;
     for (const [regex, h] of this.routes[req.method].entries()) {
       if (regex.test(req.path)) {
@@ -98,6 +69,7 @@ class App {
         break;
       }
     }
+    if (!hand) return null;
     const responseContent = {
       code: HttpStatusCode.NO_CONTENT,
       body: null as ResponseBody | null,
@@ -115,13 +87,54 @@ class App {
         });
       }
     }
-    // usage.push(req);
-    await httpRequest.respond({
+    await req._raw.respond({
       status: responseContent.code,
       headers: responseContent.body &&
         new Headers({ "content-type": "application/json" }),
       body: responseContent.body && JSON.stringify(responseContent.body),
     });
+    return true;
+  }
+
+  async onPageRequest(req: Request) {
+    let hand = null;
+    for (const [regex, h] of this.pages.entries()) {
+      if (regex.test(req.path)) {
+        hand = h;
+        break;
+      }
+    }
+    if (!hand) return null;
+    const pageProps: PageProps = {
+      location: {
+        url: req.url,
+        path: req.path,
+        query: req.query,
+      },
+    };
+    const { html } = await getHtml(hand, pageProps);
+    req._raw.respond({
+      status: 200,
+      headers: new Headers({ "content-type": "text/html" }),
+      body: html,
+    });
+    return true;
+  }
+
+  async onRequest(httpRequest: Deno.ServerRequest) {
+    const req = new Request(httpRequest);
+    let res = null;
+    if (req.path.startsWith(API_PREFIX)) {
+      res = await this.onApiRequest(req);
+    } else {
+      res = await this.onPageRequest(req);
+    }
+    if (!res) {
+      await req._raw.respond({
+        status: HttpStatusCode.NOT_FOUND,
+        // @TODO Beautify 404 errors
+      });
+    }
   }
 
   async pause() {
@@ -179,7 +192,7 @@ class App {
       console.log(`Importing page "${name}"`);
       const page = (await import(path as string)).default;
       var regex = new RegExp(
-        `^${name.replace(/^\./g, "").replace(/\.tsx?$/, "")}$`,
+        `^${name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "")}$`,
       );
       this.pages.set(regex, page);
     }
