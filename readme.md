@@ -4,16 +4,52 @@
 
 ## App hierarchy
 
-Houstone uses a filesystem structure to define pages and api routes. This means you will need less code to create your web application.
+Houstone uses a filesystem structure to define your app pieces. This means you will need less code to create your web application:
 
 ```
-- mod.ts
-- 📁 api
-- 📁 middlewares
-- 📁 pages
-- 📁 components
+- mod.ts                    # Entry point, where your app is initialized and launched
+- 📁 api                    # API endpoints
+- 📁 middlewares            # API middlewares
+- 📁 pages                  # Houstone pages
+- 📁 components             # Houstone components
 ```
 
+A good start point is to see the `example` directory inside this repo. During next sections you'll learn to create an app from scratch.
+
+## Usage
+
+### Getting started
+
+The most basic example of using Houstone is the following hello world:
+
+```typescript
+import { App } from "houstone";
+export default new App({ port: 8711 });
+```
+
+Now you can call the status endpoint that comes by default:
+
+```
+curl 'http://localhost:8711/status'
+```
+
+### Pages
+
+asdfasdf
+
+### Components
+
+asdf
+
+### Adding API endpoints
+
+asldkfjasf
+
+### Middlewares
+
+asdf
+
+# Other things
 
 ## Motivations
 
