@@ -2,6 +2,18 @@
 
 [Houstone](https://github.com/sgmonda/houstone) is a web framework for [Deno](https://deno.land), focused on simplicity and mantenibility. Take a look out there; you won't find anything easier to use. Do more writing less.
 
+## App hierarchy
+
+Houstone uses a filesystem structure to define pages and api routes. This means you will need less code to create your web application.
+
+```
+- mod.ts
+- 📁 api
+- 📁 middlewares
+- 📁 pages
+- 📁 components
+```
+
 
 ## Motivations
 
