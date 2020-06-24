@@ -1,6 +1,6 @@
 ![2020-06-24 14 57 07](https://user-images.githubusercontent.com/675812/85560715-32c76a00-b62b-11ea-8898-95a838a75802.jpg)
 
-[Houstone](https://github.com/sgmonda/houstone) is a web framework for [Deno](https://deno.land), focused on simplicity and mantenibility. Take a look out there; you won't find anything easier to use.
+[Houstone](https://github.com/sgmonda/houstone) is a web framework for [Deno](https://deno.land), focused on simplicity and mantenibility. Take a look out there; you won't find anything easier to use. Do more writing less.
 
 
 ## Motivations
