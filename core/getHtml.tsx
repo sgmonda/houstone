@@ -19,6 +19,7 @@ export default async (
     html: `
     <html>
       <head>
+        <script src="/static/bundle.js"></script>
       </head>
       <body>
       ${(ReactDOMServer as any).renderToString(<App><C {...pageProps} /></App>)}

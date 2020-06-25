@@ -1,4 +1,4 @@
-import Deno from "../deno.d.ts";
+import { Deno as TDeno } from "../lib.deno.d.ts";
 import { http } from "../deps.ts";
 import TMiddleware from "./TMiddleware.d.ts";
 import Route from "./Route.d.ts";
@@ -10,9 +10,11 @@ import { HttpStatusCode, HttpError } from "./HttpError.ts";
 import getHtml from "./getHtml.tsx";
 import { PageProps } from "./mod.ts";
 import { State, Component } from "./Component.ts";
+import { readFile } from "./modules/index.ts";
 
 const METHODS = ["get", "post", "put", "delete"];
 const API_PREFIX = "/api/";
+const STATIC_PREFIX = "/static/";
 
 interface Props {
   host?: string;
@@ -45,7 +47,7 @@ async function handle(
 }
 
 class App {
-  server: Deno.Server;
+  server: TDeno.Server;
   isListening: boolean;
   middlewares: TMiddleware[];
   routes: { [key: string]: Map<RegExp, Route> };
@@ -121,10 +123,27 @@ class App {
     return true;
   }
 
-  async onRequest(httpRequest: Deno.ServerRequest) {
+  async onFileRequest(req: Request) {
+    const filePath = Deno.cwd() + req.path;
+    console.log("STATIC REQUEST", req.path, "=>", filePath);
+    try {
+      const { file, contentLength, contentType } = await readFile(filePath);
+      const headers = new Headers();
+      if (contentType) headers.set("content-type", contentType);
+      if (contentLength) headers.set("content-length", contentLength);
+      req._raw.respond({ status: HttpStatusCode.OK, body: file, headers });
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async onRequest(httpRequest: TDeno.ServerRequest) {
     const req = new Request(httpRequest);
     let res = null;
-    if (req.path.startsWith(API_PREFIX)) {
+    if (req.path.startsWith(STATIC_PREFIX)) {
+      res = await this.onFileRequest(req);
+    } else if (req.path.startsWith(API_PREFIX)) {
       res = await this.onApiRequest(req);
     } else {
       res = await this.onPageRequest(req);
