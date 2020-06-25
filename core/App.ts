@@ -4,7 +4,7 @@ import TMiddleware from "./TMiddleware.d.ts";
 import Route from "./Route.d.ts";
 import settings from "../settings.ts";
 import Request from "./Request.ts";
-import Response, { ResponseBody } from "./Response.d.ts";
+import Response from "./Response.d.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
 import { HttpStatusCode, HttpError } from "./HttpError.ts";
 import getHtml from "./getHtml.tsx";
@@ -70,9 +70,9 @@ class App {
       }
     }
     if (!hand) return null;
-    const responseContent = {
+    const responseContent: Response = {
       code: HttpStatusCode.NO_CONTENT,
-      body: null as ResponseBody | null,
+      body: undefined,
     };
     try {
       Object.assign(responseContent, await handle(req, this.middlewares, hand));
