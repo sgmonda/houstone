@@ -1,3 +1,56 @@
+![2020-06-24 14 57 07](https://user-images.githubusercontent.com/675812/85560715-32c76a00-b62b-11ea-8898-95a838a75802.jpg)
+
+[Houstone](https://github.com/sgmonda/houstone) is a web framework for [Deno](https://deno.land), focused on simplicity and mantenibility. Take a look out there; you won't find anything easier to use. Do more writing less.
+
+## App hierarchy
+
+Houstone uses a filesystem structure to define your app pieces. This means you will need less code to create your web application:
+
+```
+- mod.ts                    # Entry point, where your app is initialized and launched
+- 📁 api                    # API endpoints
+- 📁 middlewares            # API middlewares
+- 📁 pages                  # Houstone pages
+- 📁 components             # Houstone components
+```
+
+A good start point is to see the `example` directory inside this repo. During next sections you'll learn to create an app from scratch.
+
+## Usage
+
+### Getting started
+
+The most basic example of using Houstone is the following hello world:
+
+```typescript
+import { App } from "houstone";
+export default new App({ port: 8711 });
+```
+
+Now you can call the status endpoint that comes by default:
+
+```
+curl 'http://localhost:8711/status'
+```
+
+### Pages
+
+asdfasdf
+
+### Components
+
+asdf
+
+### Adding API endpoints
+
+asldkfjasf
+
+### Middlewares
+
+asdf
+
+# Other things
+
 ## Motivations
 
 1. Avoid complex configuration to get Server Side Rendering with React
