@@ -1,7 +1,7 @@
 import { React, ReactDOM } from "../deps.client.ts";
 
 const App = ({ children }: any) => {
-  console.log('CLIENT APP', children);
+  console.log("CLIENT APP", children);
   return (
     <>
       <p>Before</p>
@@ -9,7 +9,7 @@ const App = ({ children }: any) => {
       <p>After</p>
     </>
   );
-}
+};
 
 (ReactDOM as any).hydrate(
   <App />,
