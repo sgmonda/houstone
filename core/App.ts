@@ -141,13 +141,28 @@ class App {
   async onRequest(httpRequest: TDeno.ServerRequest) {
     const req = new Request(httpRequest);
     let res = null;
-    if (req.path.startsWith(STATIC_PREFIX)) {
+    if (req.path === '/bundle.js') {
+      // @ts-ignore
+      const [diagnostics, js] = await Deno.bundle(
+        "../core/client.tsx", // @TODO Fix this path. Clients don't have this route
+        undefined,
+        { lib: ["dom", "dom.iterable"] },
+      );
+      if (js) {
+        const headers = new Headers();
+        headers.set('content-type', 'application/json');
+        req._raw.respond({ status: HttpStatusCode.OK, body: js, headers });
+        res = true;
+      }
+    } else if (req.path.startsWith(STATIC_PREFIX)) {
       res = await this.onFileRequest(req);
     } else if (req.path.startsWith(API_PREFIX)) {
       res = await this.onApiRequest(req);
     } else {
       res = await this.onPageRequest(req);
     }
+    console.log('RES', res);
+
     if (!res) {
       await req._raw.respond({
         status: HttpStatusCode.NOT_FOUND,
@@ -210,8 +225,9 @@ class App {
     for (const [name, path] of Object.entries(pages)) {
       console.log(`Importing page "${name}"`);
       const page = (await import(path as string)).default;
+      console.log('PAGE', name, path);
       var regex = new RegExp(
-        `^${name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "")}$`,
+        `^${name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(/\/index$/, '/')}$`,
       );
       this.pages.set(regex, page);
     }
