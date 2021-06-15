@@ -1,3 +1,3 @@
-export default interface Params {
+export interface Params {
   [key: string]: string;
 }

@@ -1,5 +1,5 @@
 import { React } from "../deps.ts";
-import PageProps from "./PageProps.d.ts";
+import { PageProps } from "./PageProps.d.ts";
 
 declare global {
   namespace JSX {

@@ -1,15 +1,15 @@
 import { Deno as TDeno } from "../lib.deno.d.ts";
 import { http } from "../deps.ts";
-import TMiddleware from "./TMiddleware.d.ts";
-import Route from "./Route.d.ts";
+import { TMiddleware } from "./TMiddleware.d.ts";
+import { Route } from "./Route.d.ts";
 import settings from "../settings.ts";
 import Request from "./Request.ts";
-import Response from "./Response.d.ts";
+import { Response } from "./Response.d.ts";
 import listFilesTree from "./modules/listFilesTree.ts";
-import { HttpStatusCode, HttpError } from "./HttpError.ts";
+import { HttpError, HttpStatusCode } from "./HttpError.ts";
 import getHtml from "./getHtml.tsx";
 import { PageProps } from "./mod.ts";
-import { State, Component } from "./Component.ts";
+import { Component, State } from "./Component.ts";
 import { readFile } from "./modules/index.ts";
 
 const METHODS = ["get", "post", "put", "delete"];
@@ -99,14 +99,14 @@ class App {
   }
 
   async onPageRequest(req: Request) {
-    let hand = null;
+    let page = null;
     for (const [regex, h] of this.pages.entries()) {
       if (regex.test(req.path)) {
-        hand = h;
+        page = h;
         break;
       }
     }
-    if (!hand) return null;
+    if (!page) return null;
     const pageProps: PageProps = {
       location: {
         url: req.url,
@@ -114,7 +114,7 @@ class App {
         query: req.query,
       },
     };
-    const { html } = await getHtml(hand, pageProps);
+    const { html } = await getHtml(page, pageProps);
     req._raw.respond({
       status: 200,
       headers: new Headers({ "content-type": "text/html" }),

@@ -1,4 +1,4 @@
-import { React, Component, createComponent, State } from "../../mod.ts";
+import { Component, createComponent, React, State } from "../../mod.ts";
 
 export interface Props {
   a?: number;

@@ -1,6 +1,6 @@
-import Query from "./Query.d.ts";
+import type { Query } from "./Query.d.ts";
 
-export default interface PageProps {
+export interface PageProps {
   location: {
     url: string;
     path: string;

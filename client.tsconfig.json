@@ -1,12 +1,12 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "lib": [
-            "DOM",
-            "ESNext"
-        ]
-    },
-    "files": [
-        "exampple/components/prueba.tsx"
+  "compilerOptions": {
+    "strict": true,
+    "lib": [
+      "DOM",
+      "ESNext"
     ]
+  },
+  "files": [
+    "exampple/components/prueba.tsx"
+  ]
 }

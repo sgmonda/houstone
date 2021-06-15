@@ -1,4 +1,4 @@
-import { Route, Request, Response, HttpError } from "../../mod.ts";
+import { HttpError, Request, Response, Route } from "../../mod.ts";
 
 export const get: Route = async ({ query }: Request): Promise<Response> => {
   const { code, message } = query;

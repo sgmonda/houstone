@@ -1,3 +1,3 @@
-export default interface Query {
+export type Query = {
   [key: string]: string[];
-}
+};

@@ -25,7 +25,7 @@ const MyPage: Component<Props, MyState> = (
   };
   return (
     <>
-      <p>I'm index page</p>
+      <p>I'm index page 2</p>
       <div>
         {JSON.stringify(location)}
       </div>

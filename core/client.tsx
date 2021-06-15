@@ -12,7 +12,9 @@ const App = ({ children }: any) => {
 };
 
 (ReactDOM as any).hydrate(
-  <App />,
+  <App>
+    {/* <Page {...pageProps}></Page> */}
+  </App>,
   // @ts-ignore
   document.getElementById("root"),
 );

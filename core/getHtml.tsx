@@ -17,17 +17,21 @@ export default async (
   Child: Component<any, any>,
   pageProps: PageProps,
 ) => {
+  const app = (ReactDOMServer as any).renderToString(
+    <App>
+      <Child {...pageProps} />
+    </App>,
+  );
   return {
     html: `
     <html>
       <body>
         <div id="root">
-          ${
-      (ReactDOMServer as any).renderToString(
-        <App><Child {...pageProps} /></App>,
-      )
-    }
+          ${app}
         </div>
+        <script>
+          console.log("2+2") // <---- @TODO Define here current page, so client knows what to render
+        </script>
         <script src="/bundle.js"></script>
       </body>
     </html>`,

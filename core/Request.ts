@@ -1,6 +1,6 @@
 import { Deno } from "../lib.deno.d.ts";
-import Query from "./Query.d.ts";
-import Params from "./Params.d.ts";
+import type { Query } from "./Query.d.ts";
+import { Params } from "./Params.d.ts";
 
 export type RequestState = Map<any, any>;
 
