@@ -1,3 +1,3 @@
-export * from '../mod.ts';
+export * from "../mod.ts";
 
-export { default as Houstone } from '../mod.ts';
+export { default as Houstone } from "../mod.ts";

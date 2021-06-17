@@ -7,7 +7,7 @@ const App = ({ children }: any) => {
   return (
     <>
       <p>Before</p>
-      {/* {children} */}
+      {children}
       <p>After</p>
     </>
   );

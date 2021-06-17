@@ -14,10 +14,10 @@ type MyState = {
 
 const MyPage: Component<Props, MyState> = (
   { a, b, location }: Props,
-  { c, d, setState }: State<MyState>,
+  state: State<MyState>,
 ): string => {
   console.log("LAS PROPS QUE LLEGAN", a, b);
-  console.log("EL STATE QUE LLEGA", c, d);
+  console.log("EL STATE QUE LLEGA", state);
   const onClick = (e: any) => {
     e.preventDefault();
     console.log("CLICK!");
@@ -28,6 +28,10 @@ const MyPage: Component<Props, MyState> = (
       <p>I'm index page 2</p>
       <div>
         {JSON.stringify(location)}
+      </div>
+      <div>
+        STATE:
+        <pre>{JSON.stringify(state, null, 2)}</pre>
       </div>
       <MyComponent />
       {

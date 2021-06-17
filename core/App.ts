@@ -114,16 +114,15 @@ class App {
         query: req.query,
       },
     };
-    console.count('PAGE REQ');
+    console.log("PAGE REQ", page.toString());
     const { html } = getHtml(page, pageProps);
-    console.count('PAGE REQ');
     req._raw.respond({
       status: 200,
       headers: new Headers({ "content-type": "text/html" }),
       body: html,
     });
     return true;
-  }
+  };
 
   async onFileRequest(req: Request) {
     const filePath = Deno.cwd() + req.path;
@@ -144,19 +143,17 @@ class App {
     const req = new Request(httpRequest);
     let res = null;
     if (req.path === "/bundle.js") {
-      // @ts-ignore: I cannot remember why this is needed
-      const bundled = await (Deno as any).emit(
+      const { files } = await (Deno as any).emit(
         "../core/client.tsx", // @TODO Fix this path. Clients don't have this route
-        { bundle: 'module' },
+        { bundle: "module" },
       );
-      const js = bundled.files['deno:///bundle.js'];
-      console.log('JS', bundled.files['deno:///bundle.js']);
+      const js = files["deno:///bundle.js"];
       if (js) {
         const headers = new Headers();
         headers.set("content-type", "application/json");
         req._raw.respond({ status: HttpStatusCode.OK, body: js, headers });
         res = true;
-        console.log('JS CODE FOR CLIENT ============\n', js, '\n===========');
+        // console.log("JS CODE FOR CLIENT ============\n", js, "\n===========");
       }
     } else if (req.path.startsWith(STATIC_PREFIX)) {
       res = await this.onFileRequest(req);
@@ -231,10 +228,11 @@ class App {
       const page = (await import(path as string)).default;
       console.log("PAGE", name, path);
       var regex = new RegExp(
-        `^${name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
-          /\/index$/,
-          "/",
-        )
+        `^${
+          name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
+            /\/index$/,
+            "/",
+          )
         }$`,
       );
       this.pages.set(regex, page);
