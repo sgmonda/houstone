@@ -3,17 +3,17 @@ import { Component } from "./Component.ts";
 import { PageProps } from "./mod.ts";
 
 const App = ({ children }: any) => {
-  console.log("SERVER APP", children);
+  console.log("SERVER SIDE APP", children);
   return (
     <>
       <p>Before</p>
-      {children}
+      {/* {children} */}
       <p>After</p>
     </>
   );
 };
 
-export default async (
+export default (
   Child: Component<any, any>,
   pageProps: PageProps,
 ) => {
@@ -22,6 +22,7 @@ export default async (
       <Child {...pageProps} />
     </App>,
   );
+
   return {
     html: `
     <html>

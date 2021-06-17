@@ -14,6 +14,7 @@ const App = ({ children }: any) => {
 (ReactDOM as any).hydrate(
   <App>
     {/* <Page {...pageProps}></Page> */}
+    hello
   </App>,
   // @ts-ignore
   document.getElementById("root"),

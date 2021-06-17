@@ -34,7 +34,7 @@ export default new App({ port: 8711 });
 Now you can start the app:
 
 ```
-$ deno run --allow-net --allow-read mod.ts
+$ deno run -Ar --unstable mod.ts
 ```
 
 and call the status endpoint that comes by default:

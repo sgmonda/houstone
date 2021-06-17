@@ -1,6 +1,6 @@
-import H from "../mod.ts";
+import { Houstone } from "./deps.ts";
 
-const MyApp = new H.App({
+const MyApp = new Houstone.App({
   port: 8711,
 });
 
