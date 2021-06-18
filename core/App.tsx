@@ -126,8 +126,6 @@ class App {
     path = path.replace(/\/.\//g, "/");
     // path = path.replace(/\/[^\/]+$/, '/example.tsx');
     const { files } = await (Deno as any).emit(path, { bundle: "module" });
-    const { files: filesC } = await (Deno as any).emit(path, { check: false });
-    const pageJS = filesC[`file://${path}.js`];
     const { files: filesB } = await (Deno as any).emit("../core/client.tsx", {
       check: false,
     });
@@ -290,11 +288,10 @@ class App {
       const { default: page, getInitialProps } = (await import(path as string));
       console.log("PAGE", name, path);
       var regex = new RegExp(
-        `^${
-          name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
-            /\/index$/,
-            "/",
-          )
+        `^${name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
+          /\/index$/,
+          "/",
+        )
         }$`,
       );
       this.pages.set(regex, {
