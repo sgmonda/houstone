@@ -20,7 +20,7 @@ const MyComponent: Component<Props, MyState> = (
     setState({ c: Math.random(), d: "Random" });
   };
   return (
-    <div style={{ border: 'solid 1px green' }}>
+    <div style={{ border: "solid 1px green" }}>
       COMPONENT
       <p>{c}</p>
       <button onClick={onClick}>

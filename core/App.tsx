@@ -1,5 +1,5 @@
 import { Deno as TDeno } from "../lib.deno.d.ts";
-import { React, ReactDOMServer, http } from "../deps.ts";
+import { http, React, ReactDOMServer } from "../deps.ts";
 import { TMiddleware } from "./TMiddleware.d.ts";
 import { Route } from "./Route.d.ts";
 import settings from "../settings.ts";
@@ -51,7 +51,10 @@ class App {
   isListening: boolean;
   middlewares: TMiddleware[];
   routes: { [key: string]: Map<RegExp, Route> };
-  pages: Map<RegExp, { path: string; component: Component<PageProps, State<any>> }>;
+  pages: Map<
+    RegExp,
+    { path: string; component: Component<PageProps, State<any>> }
+  >;
 
   async start() {
     const { hostname, port } = this.server.listener.addr;
@@ -115,10 +118,16 @@ class App {
       },
     };
     let { html } = getHtml(page.component, pageProps);
-    const { files } = await (Deno as any).emit(page.path, { bundle: 'module' });
-    const pageScript = files['deno:///bundle.js'];
-    console.log('PAGE SCRIPT ==========\n', pageScript.substring(0, 256), '\n...\n', pageScript.substring(pageScript.length - 256, pageScript.length), '\n========');
-    html = html.replace('/* PAGE_SCRIPT */', pageScript);
+    const { files } = await (Deno as any).emit(page.path, { bundle: "module" });
+    const pageScript = files["deno:///bundle.js"];
+    console.log(
+      "PAGE SCRIPT ==========\n",
+      pageScript.substring(0, 256),
+      "\n...\n",
+      pageScript.substring(pageScript.length - 256, pageScript.length),
+      "\n========",
+    );
+    html = html.replace("/* PAGE_SCRIPT */", pageScript);
     req._raw.respond({
       status: 200,
       headers: new Headers({ "content-type": "text/html" }),
@@ -155,8 +164,8 @@ class App {
       if (js) {
         let page = null;
         for (const [regex, { component }] of this.pages.entries()) {
-          const referer = req.headers.get('referer') || '';
-          if (regex.test(referer.split(req.headers.get('host') || '')[1])) {
+          const referer = req.headers.get("referer") || "";
+          if (regex.test(referer.split(req.headers.get("host") || "")[1])) {
             page = component;
             break;
           }
@@ -171,9 +180,10 @@ class App {
         };
         js = js
           // .replace(/const Page[^;]+;/, `import Page from '/pages/page2.tsx';`)
-          .replace(/const pageProps[^;]+;/, 'const pageProps = ' + JSON.stringify(pageProps) + ';');
-
-
+          .replace(
+            /const pageProps[^;]+;/,
+            "const pageProps = " + JSON.stringify(pageProps) + ";",
+          );
 
         const headers = new Headers();
         headers.set("content-type", "application/json");
@@ -254,10 +264,11 @@ class App {
       const page = (await import(path as string)).default;
       console.log("PAGE", name, path);
       var regex = new RegExp(
-        `^${name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
-          /\/index$/,
-          "/",
-        )
+        `^${
+          name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
+            /\/index$/,
+            "/",
+          )
         }$`,
       );
       this.pages.set(regex, { path: String(path), component: page });
@@ -271,7 +282,10 @@ class App {
       put: new Map(),
       delete: new Map(),
     };
-    this.pages = new Map<RegExp, { path: string; component: Component<PageProps, State<any>> }>();
+    this.pages = new Map<
+      RegExp,
+      { path: string; component: Component<PageProps, State<any>> }
+    >();
     this.middlewares = [];
     const { host: hostname = settings.host, port = settings.port } = props;
     this.server = http.serve({ port, hostname });
