@@ -47,6 +47,8 @@ class Request {
   method: string;
   url: string;
   path: string;
+  host: string;
+  referer: string;
   query: Query;
   params: Params;
   date: Date;
@@ -65,6 +67,8 @@ class Request {
     this.path = path;
     this.query = query;
     this.params = params;
+    this.host = httpRequest.host;
+    this.referer = httpRequest.referer;
     this.date = new Date();
     console.log("PARSE PATH", path);
     console.log("PARSE QUERY", query);

@@ -8,6 +8,6 @@ export * from "./Component.ts";
 export * from "./Route.d.ts";
 export { default as Page } from "./Page.ts";
 export * from "./PageProps.d.ts";
-export { default as App } from "./App.ts";
+export { default as App } from "./App.tsx";
 export * from "./TMiddleware.d.ts";
 export * from "./HttpError.ts";

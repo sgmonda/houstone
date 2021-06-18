@@ -1,5 +1,5 @@
 import { React } from "../deps.ts";
-const { useState } = (React as any);
+const { useState } = React as any;
 export interface Component<Props, S> {
   (props: Props, state: State<S>): string;
 }

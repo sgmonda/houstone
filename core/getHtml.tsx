@@ -25,16 +25,21 @@ export default (
 
   return {
     html: `
-    <html>
-      <body>
-        <div id="root">
-          ${app}
-        </div>
-        <script>
-          console.log("2+2") // <---- @TODO Define here current page, so client knows what to render
-        </script>
-        <script src="/bundle.js"></script>
-      </body>
-    </html>`,
+      <html>
+        <body>
+          <div id="root">
+            ${app}
+          </div>
+          <script>
+            console.log("2+2") // <---- @TODO Define here current page, so client knows what to render
+          </script>
+          <script>/* PAGE_SCRIPT */</script>
+          <script src="/bundle.js"></script>
+        </body>
+      </html>
+    `,
+    js: `
+      ${app}
+    `,
   };
 };
