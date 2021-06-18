@@ -53,7 +53,11 @@ class App {
   routes: { [key: string]: Map<RegExp, Route> };
   pages: Map<
     RegExp,
-    { path: string; component: Component<PageProps, State<any>> }
+    {
+      path: string;
+      component: Component<PageProps, State<any>>;
+      getInitialProps?: (pageProps: PageProps) => Promise<PageProps>;
+    }
   >;
 
   async start() {
@@ -118,8 +122,30 @@ class App {
       },
     };
     let { html } = getHtml(page.component, pageProps);
-    const { files } = await (Deno as any).emit(page.path, { bundle: "module" });
-    const pageScript = files["deno:///bundle.js"];
+    let { path } = page;
+    path = path.replace(/\/.\//g, "/");
+    // path = path.replace(/\/[^\/]+$/, '/example.tsx');
+    const { files } = await (Deno as any).emit(path, { bundle: "module" });
+    const { files: filesC } = await (Deno as any).emit(path, { check: false });
+    const pageJS = filesC[`file://${path}.js`];
+    const { files: filesB } = await (Deno as any).emit("../core/client.tsx", {
+      check: false,
+    });
+    let pageScript = files["deno:///bundle.js"];
+    const { files: files2 } = await (Deno as any).emit(path, { check: false });
+    pageScript = files2[`file://${path}.js`] + "\n// second part\n" +
+      filesB["file:///Users/sgmonda/Projects/houstone/core/client.tsx.js"];
+    const pagePropsObj = page.getInitialProps
+      ? await page.getInitialProps(pageProps)
+      : {};
+    pageScript = pageScript.replace(
+      /const pageProps =[^;]+;/,
+      `const pageProps = ${JSON.stringify(pagePropsObj)};`,
+    );
+    pageScript = pageScript.replace(
+      /const Page =[^;]+;/,
+      `const Page = MyPage;`,
+    );
     console.log(
       "PAGE SCRIPT ==========\n",
       pageScript.substring(0, 256),
@@ -261,7 +287,7 @@ class App {
     const pages = await listFilesTree("./pages");
     for (const [name, path] of Object.entries(pages)) {
       console.log(`Importing page "${name}"`);
-      const page = (await import(path as string)).default;
+      const { default: page, getInitialProps } = (await import(path as string));
       console.log("PAGE", name, path);
       var regex = new RegExp(
         `^${
@@ -271,7 +297,11 @@ class App {
           )
         }$`,
       );
-      this.pages.set(regex, { path: String(path), component: page });
+      this.pages.set(regex, {
+        path: String(path),
+        component: page,
+        getInitialProps,
+      });
     }
   }
 
@@ -284,7 +314,11 @@ class App {
     };
     this.pages = new Map<
       RegExp,
-      { path: string; component: Component<PageProps, State<any>> }
+      {
+        path: string;
+        component: Component<PageProps, State<any>>;
+        getInitialProps?: (pageProps: PageProps) => Promise<PageProps>;
+      }
     >();
     this.middlewares = [];
     const { host: hostname = settings.host, port = settings.port } = props;

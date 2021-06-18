@@ -1,4 +1,4 @@
-import { React, ReactDOM } from "../deps.client.ts";
+import ReactDOM from "https://dev.jspm.io/react-dom@16.14.0";
 
 // const useState = (React as any).useState.toString();
 // console.log('USE STATE', useState);

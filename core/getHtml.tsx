@@ -33,8 +33,10 @@ export default (
           <script>
             console.log("2+2") // <---- @TODO Define here current page, so client knows what to render
           </script>
-          <script>/* PAGE_SCRIPT */</script>
-          <script src="/bundle.js"></script>
+          <script type="module">
+            /* PAGE_SCRIPT */
+          </script>
+          <!--<script src="/bundle.js"></script>-->
         </body>
       </html>
     `,

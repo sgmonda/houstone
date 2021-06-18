@@ -1,18 +1,6 @@
 import { React } from "../deps.ts";
 import { PageProps } from "./PageProps.d.ts";
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      button: any;
-      div: any;
-      h1: any;
-      p: any;
-      pre: any;
-    }
-  }
-}
-
 interface Props {
   port: number;
 }
