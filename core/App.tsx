@@ -288,10 +288,11 @@ class App {
       const { default: page, getInitialProps } = (await import(path as string));
       console.log("PAGE", name, path);
       var regex = new RegExp(
-        `^${name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
-          /\/index$/,
-          "/",
-        )
+        `^${
+          name.replace(/^\.\/pages/g, "").replace(/\.tsx?$/, "").replace(
+            /\/index$/,
+            "/",
+          )
         }$`,
       );
       this.pages.set(regex, {
