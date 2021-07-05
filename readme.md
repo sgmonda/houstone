@@ -8,7 +8,7 @@ easier to use. Do more writing less.
 **NOTE**: This project is still under development. You're welcome to contribute
 or enjoy it on your own, but don't try to use it in production.
 
-### Key featues:
+### Key features:
 
 - Zero configuration needed for transpilation or compilation, so no webpack-like
   tools are needed.
