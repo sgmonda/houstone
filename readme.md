@@ -15,7 +15,7 @@ or enjoy it on your own, but don't try to use it in production.
 - Out-of-the-box usage metrics and status page.
 - Out-of-the-box usage limits, by IP and time.
 
-# Requirements
+### Requirements
 
 - Deno >= 1.11.0
 
