@@ -1,3 +1,4 @@
+import React from "https://dev.jspm.io/react@16.14.0";
 import ReactDOM from "https://dev.jspm.io/react-dom@16.14.0";
 
 // const useState = (React as any).useState.toString();
