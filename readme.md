@@ -8,14 +8,14 @@ easier to use. Do more writing less.
 **NOTE**: This project is still under development. You're welcome to contribute
 or enjoy it on your own, but don't try to use it in production.
 
-# Featues
+### Key featues:
 
 - Zero configuration needed for transpilation or compilation, so no webpack-like
   tools are needed.
 - Out-of-the-box usage metrics and status page.
 - Out-of-the-box usage limits, by IP and time.
 
-## Requirements
+# Requirements
 
 - Deno >= 1.11.0
 
